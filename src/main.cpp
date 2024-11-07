@@ -32,7 +32,12 @@ int main() {
     window.setMouseCursorGrabbed(true);
 
     auto myCube = new Cube();
+    auto otherCube = new Cube();
+
+    otherCube->setPosition(sf::Vector3f(5.f, 0.f, -5.f));
+
     Camera camera(window);
+    sf::Clock clock;
 
     while (window.isOpen()) {
         for (auto event = sf::Event(); window.pollEvent(event);) {
@@ -43,7 +48,8 @@ int main() {
         }
 
 
-        camera.update();
+        camera.update(clock.restart().asSeconds());
+
         setProjection(static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y));
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -54,10 +60,12 @@ int main() {
 
         window.clear();
         window.draw(*myCube);
+        window.draw(*otherCube);
         window.display();
     }
 
     delete myCube;
+    delete otherCube;
 
     return 0;
 }

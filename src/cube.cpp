@@ -7,7 +7,7 @@
 #include <SFML/OpenGL.hpp>
 
 Cube::Cube() : size(1.0f) {
-    this->position = sf::Vector3f(3.0f, 0.0f, 0.0f);
+    this->position = sf::Vector3f(0.0f, 0.0f, 0.0f);
 }
 
 Cube::~Cube() = default;
