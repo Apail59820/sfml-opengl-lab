@@ -7,12 +7,12 @@
 #include "SFML/Graphics/Drawable.hpp"
 #include "SFML/System/Vector3.hpp"
 
-class Cube final : public sf::Drawable {
+class cube final : public sf::Drawable {
 
 public:
 
-    Cube();
-    ~Cube() override;
+    cube();
+    ~cube() override;
 
     [[nodiscard]] float getSize() const;
     void setSize(float size);

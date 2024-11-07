@@ -26,7 +26,10 @@ add_executable(main src/main.cpp
         include/Cube.h
         src/cube.cpp
         include/camera.h
-        src/camera.cpp)
+        src/camera.cpp
+        include/player.h
+        src/player.cpp
+        include/globals.h)
 target_link_libraries(main PRIVATE sfml-graphics glm)
 target_compile_features(main PRIVATE cxx_std_17)
 

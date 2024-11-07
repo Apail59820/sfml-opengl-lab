@@ -2,65 +2,36 @@
 // Created by Amaury Paillard on 07/11/2024.
 //
 
-#include "../include/camera.h"
-
-#include <SFML/Window/Mouse.hpp>
-#include <cmath>
 #include <SFML/OpenGL.hpp>
 
-#include "SFML/Window/Keyboard.hpp"
+#include "../include/camera.h"
 
-Camera::Camera(const sf::RenderWindow &window)
-    : pitch(0.0f), yaw(0.0f), isFirstMouseMovement(true) {
-    initializeCenter(window);
+#include <iostream>
+#include <ostream>
+
+#include "../include/globals.h"
+#include "../include/player.h"
+
+#include "SFML/Window/Mouse.hpp"
+
+Camera::Camera(Player *player)
+    : player(player), pitch(0.0f), yaw(0.0f), isFirstMouseMovement(true) {
+    initializeCenter(*Globals::window);
 }
+
 
 void Camera::initializeCenter(const sf::RenderWindow &window) {
     windowCenter = sf::Vector2i(static_cast<int>(window.getPosition().x + window.getSize().x / 2),
                                 static_cast<int>(window.getPosition().y + window.getSize().y / 2));
 }
 
-void Camera::processKeyboardInput(const float deltaTime) {
-    const float radYaw = yaw * (3.14159265f / 180.0f);
-
-    targetSpeedX = 0.0f;
-    targetSpeedZ = 0.0f;
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
-        targetSpeedX += maxSpeed * std::sin(radYaw);
-        targetSpeedZ -= maxSpeed * std::cos(radYaw);
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-        targetSpeedX -= maxSpeed * std::sin(radYaw);
-        targetSpeedZ += maxSpeed * std::cos(radYaw);
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-        targetSpeedX -= maxSpeed * std::cos(radYaw);
-        targetSpeedZ -= maxSpeed * std::sin(radYaw);
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-        targetSpeedX += maxSpeed * std::cos(radYaw);
-        targetSpeedZ += maxSpeed * std::sin(radYaw);
-    }
-
-    currentSpeedX += (targetSpeedX - currentSpeedX) * acceleration * deltaTime;
-    currentSpeedZ += (targetSpeedZ - currentSpeedZ) * acceleration * deltaTime;
-
-    if (targetSpeedX == 0.0f) {
-        currentSpeedX += -currentSpeedX * deceleration * deltaTime;
-    }
-    if (targetSpeedZ == 0.0f) {
-        currentSpeedZ += -currentSpeedZ * deceleration * deltaTime;
-    }
-
-    positionX += currentSpeedX * deltaTime;
-    positionZ += currentSpeedZ * deltaTime;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && isOnGround) {
-        velocityY = jumpStrength;
-        isOnGround = false;
-    }
+void Camera::update() {
+    processMouseMovement();
+    glLoadIdentity();
+    glRotatef(pitch, 1.0f, 0.0f, 0.0f);
+    glRotatef(yaw, 0.0f, 1.0f, 0.0f);
+    glTranslatef(-player->getPositionX(), -player->getPositionY(), -player->getPositionZ());
 }
-
 
 void Camera::processMouseMovement() {
     const sf::Vector2i mousePos = sf::Mouse::getPosition();
@@ -84,34 +55,17 @@ void Camera::processMouseMovement() {
     yaw += offsetX;
     pitch += offsetY;
 
-    if (pitch > 89.0f)
-        pitch = 89.0f;
-    if (pitch < -89.0f)
-        pitch = -89.0f;
+    if (pitch > 89.0f) pitch = 89.0f;
+    if (pitch < -89.0f) pitch = -89.0f;
 
     sf::Mouse::setPosition(windowCenter);
 }
 
-
-
-void Camera::update(const float deltaTime) {
-    processMouseMovement();
-    processKeyboardInput(deltaTime);
-
-    if (!isOnGround) {
-        velocityY += gravity * deltaTime;
-        positionY += velocityY * deltaTime;
-
-        if (positionY <= 0.0f) {
-            positionY = 0.0f;
-            velocityY = 0.0f;
-            isOnGround = true;
-        }
-    }
-}
-
 void Camera::applyView() const {
+    glLoadIdentity();
+
     glRotatef(pitch, 1.0f, 0.0f, 0.0f);
     glRotatef(yaw, 0.0f, 1.0f, 0.0f);
-    glTranslatef(-positionX, -positionY, -positionZ);
+
+    glTranslatef(-player->getPositionX(), -player->getPositionY(), -player->getPositionZ());
 }

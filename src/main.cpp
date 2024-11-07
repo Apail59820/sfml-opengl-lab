@@ -2,8 +2,9 @@
 #include <SFML/OpenGL.hpp>
 #include <iostream>
 
-#include "../include/Cube.h"
-#include "../include/camera.h"
+#include "../include/cube.h"
+#include "../include/globals.h"
+#include "../include/player.h"
 
 
 void setProjection(const float width, const float height) {
@@ -23,45 +24,45 @@ void setupOpenGL() {
 
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "OpenGL Lab", sf::Style::Default, sf::ContextSettings(32));
-    window.setVerticalSyncEnabled(true);
+    Globals::window = std::make_unique<sf::RenderWindow>(sf::VideoMode(1920, 1080), "OpenGL Lab", sf::Style::Default, sf::ContextSettings(32));
+
+    Globals::window->setVerticalSyncEnabled(true);
 
     setupOpenGL();
 
-    window.setMouseCursorVisible(false);
-    window.setMouseCursorGrabbed(true);
+    Globals::window->setMouseCursorVisible(false);
+    Globals::window->setMouseCursorGrabbed(true);
 
-    auto myCube = new Cube();
-    auto otherCube = new Cube();
+    auto myCube = new cube();
+    auto otherCube = new cube();
 
     otherCube->setPosition(sf::Vector3f(5.f, 0.f, -5.f));
 
-    Camera camera(window);
     sf::Clock clock;
+    Player player(0.0f, 0.0f, 5.0f);
 
-    while (window.isOpen()) {
-        for (auto event = sf::Event(); window.pollEvent(event);) {
+    while (Globals::window->isOpen()) {
+        for (auto event = sf::Event(); Globals::window->pollEvent(event);) {
             if (event.type == sf::Event::Closed ||
                 (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)) {
-                window.close();
+                Globals::window->close();
             }
         }
 
 
-        camera.update(clock.restart().asSeconds());
+        player.update(clock.restart().asSeconds());
+        setProjection(static_cast<float>(Globals::window->getSize().x), static_cast<float>(Globals::window->getSize().y));
 
-        setProjection(static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y));
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
         glLoadIdentity();
 
-        camera.applyView();
+        player.getCamera()->applyView();
 
-        window.clear();
-        window.draw(*myCube);
-        window.draw(*otherCube);
-        window.display();
+        Globals::window->clear();
+        Globals::window->draw(*myCube);
+        Globals::window->draw(*otherCube);
+        Globals::window->display();
     }
 
     delete myCube;

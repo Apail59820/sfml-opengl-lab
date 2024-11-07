@@ -2,34 +2,34 @@
 // Created by Amaury Paillard on 07/11/2024.
 //
 
-#include "../include/Cube.h"
+#include "../include/cube.h"
 
 #include <SFML/OpenGL.hpp>
 
-Cube::Cube() : size(1.0f) {
+cube::cube() : size(1.0f) {
     this->position = sf::Vector3f(0.0f, 0.0f, 0.0f);
 }
 
-Cube::~Cube() = default;
+cube::~cube() = default;
 
-float Cube::getSize() const {
+float cube::getSize() const {
     return size;
 }
 
-void Cube::setSize(const float size) {
-    Cube::size = size;
+void cube::setSize(const float size) {
+    cube::size = size;
 }
 
-sf::Vector3f Cube::getPosition() const {
+sf::Vector3f cube::getPosition() const {
     return position;
 }
 
-void Cube::setPosition(const sf::Vector3f &newPosition) {
+void cube::setPosition(const sf::Vector3f &newPosition) {
     this->position = newPosition;
 }
 
 
-void Cube::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+void cube::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     glPushMatrix();
     glTranslatef(position.x, position.y, position.z);
 
