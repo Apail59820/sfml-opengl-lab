@@ -20,6 +20,12 @@ void setProjection(const float width, const float height) {
 void setupOpenGL() {
     glEnable(GL_DEPTH_TEST);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
+
+    glEnable(GL_DEPTH_CLAMP);
 }
 
 
@@ -39,7 +45,7 @@ int main() {
     otherCube->setPosition(sf::Vector3f(5.f, 0.f, -5.f));
 
     sf::Clock clock;
-    Player player(0.0f, 0.0f, 5.0f);
+    Player player(0.0f, 0.0f, 15.0f);
 
     while (Globals::window->isOpen()) {
         for (auto event = sf::Event(); Globals::window->pollEvent(event);) {

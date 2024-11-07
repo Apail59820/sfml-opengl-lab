@@ -29,7 +29,6 @@ void Camera::update() {
     glLoadIdentity();
     glRotatef(pitch, 1.0f, 0.0f, 0.0f);
     glRotatef(yaw, 0.0f, 1.0f, 0.0f);
-    glTranslatef(-player->getPositionX(), -player->getPositionY(), -player->getPositionZ());
 }
 
 void Camera::processMouseMovement() {
