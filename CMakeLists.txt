@@ -24,7 +24,9 @@ FetchContent_MakeAvailable(GLM)
 
 add_executable(main src/main.cpp
         include/Cube.h
-        src/cube.cpp)
+        src/cube.cpp
+        include/camera.h
+        src/camera.cpp)
 target_link_libraries(main PRIVATE sfml-graphics glm)
 target_compile_features(main PRIVATE cxx_std_17)
 

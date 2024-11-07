@@ -1,13 +1,10 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/OpenGL.hpp>
 #include <iostream>
-#include "../include/Cube.h"
 
-// Variables globales pour gérer l'angle de la caméra
-float pitch = 0.0f;  // Rotation autour de l'axe X
-float yaw = 0.0f;    // Rotation autour de l'axe Y
-bool isFirstMouse = true;
-sf::Vector2i lastMousePos;
+#include "../include/Cube.h"
+#include "../include/camera.h"
+
 
 void setProjection(const float width, const float height) {
     glMatrixMode(GL_PROJECTION);
@@ -24,29 +21,6 @@ void setupOpenGL() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-void processMouseMovement(const sf::Vector2i& mousePos) {
-    if (isFirstMouse) {
-        lastMousePos = mousePos;
-        isFirstMouse = false;
-    }
-
-    auto offsetX = static_cast<float>(mousePos.x - lastMousePos.x);
-    auto offsetY = static_cast<float>(lastMousePos.y - mousePos.y);
-
-    lastMousePos = mousePos;
-
-    constexpr float sensitivity = 0.1f;
-    offsetX *= sensitivity;
-    offsetY *= sensitivity;
-
-    yaw += offsetX;
-    pitch += offsetY;
-
-    if (pitch > 89.0f)
-        pitch = 89.0f;
-    if (pitch < -89.0f)
-        pitch = -89.0f;
-}
 
 int main() {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "OpenGL Lab", sf::Style::Default, sf::ContextSettings(32));
@@ -54,43 +28,29 @@ int main() {
 
     setupOpenGL();
 
-    window.setMouseCursorVisible(true);
+    window.setMouseCursorVisible(false);
     window.setMouseCursorGrabbed(true);
 
     auto myCube = new Cube();
+    Camera camera(window);
 
     while (window.isOpen()) {
-
         for (auto event = sf::Event(); window.pollEvent(event);) {
-            if (event.type == sf::Event::Closed) {
+            if (event.type == sf::Event::Closed ||
+                (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)) {
                 window.close();
-            }
-            else if (event.type == sf::Event::KeyPressed) {
-                if (event.key.code == sf::Keyboard::Escape) {
-                    window.close();
-                }
-            }
-            else if (event.type == sf::Event::MouseMoved) {
-                processMouseMovement(sf::Vector2i(event.mouseMove.x, event.mouseMove.y));
             }
         }
 
-        sf::Vector2i windowCenter(static_cast<int>(window.getSize().x), static_cast<int>(window.getSize().y));
-        sf::Mouse::setPosition(windowCenter);
 
+        camera.update();
         setProjection(static_cast<float>(window.getSize().x), static_cast<float>(window.getSize().y));
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glLoadIdentity();
 
-        std::cout << pitch << ", " << yaw << std::endl;
-
-        // Appliquer les rotations de la caméra
-        glRotatef(pitch, 1.0f, 0.0f, 0.0f);  // Rotation autour de l'axe X
-        glRotatef(yaw, 0.0f, 1.0f, 0.0f);    // Rotation autour de l'axe Y
-
-        glTranslatef(0.0f, 0.0f, -5.0f);  // Déplacement de la caméra en arrière
+        camera.applyView();
 
         window.clear();
         window.draw(*myCube);
