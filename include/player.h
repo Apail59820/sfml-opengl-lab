@@ -4,7 +4,6 @@
 
 #ifndef PLAYER_H
 #define PLAYER_H
-#include "SFML/Graphics/RenderWindow.hpp"
 
 #include "camera.h"
 

@@ -6,7 +6,6 @@
 
 #include "../include/camera.h"
 
-#include <iostream>
 #include <ostream>
 
 #include "../include/globals.h"

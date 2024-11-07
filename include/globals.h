@@ -4,7 +4,6 @@
 
 #ifndef GLOBALS_H
 #define GLOBALS_H
-#include <memory>
 
 #include "SFML/Graphics/RenderWindow.hpp"
 
