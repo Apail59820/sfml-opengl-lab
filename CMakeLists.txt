@@ -14,28 +14,18 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
-FetchContent_Declare(ImGui
-    GIT_REPOSITORY https://github.com/ocornut/imgui
-    GIT_TAG v1.89.9
-    GIT_SHALLOW ON
-    EXCLUDE_FROM_ALL
-    SYSTEM)
-FetchContent_MakeAvailable(ImGui)
-FetchContent_GetProperties(ImGui SOURCE_DIR IMGUI_DIR)
-
-set(IMGUI_SFML_FIND_SFML OFF)
-FetchContent_Declare(ImGui-SFML
-    GIT_REPOSITORY https://github.com/SFML/imgui-sfml
-    GIT_TAG 2.6.x
-    GIT_SHALLOW ON
-    EXCLUDE_FROM_ALL
-    SYSTEM)
-FetchContent_MakeAvailable(ImGui-SFML)
+FetchContent_Declare(GLM
+        GIT_REPOSITORY https://github.com/g-truc/glm.git
+        GIT_TAG master
+        GIT_SHALLOW ON
+        EXCLUDE_FROM_ALL
+        SYSTEM)
+FetchContent_MakeAvailable(GLM)
 
 add_executable(main src/main.cpp
-        include/gui.h
-        src/gui.cpp)
-target_link_libraries(main PRIVATE sfml-graphics ImGui-SFML::ImGui-SFML)
+        include/Cube.h
+        src/cube.cpp)
+target_link_libraries(main PRIVATE sfml-graphics glm)
 target_compile_features(main PRIVATE cxx_std_17)
 
 if(WIN32)
