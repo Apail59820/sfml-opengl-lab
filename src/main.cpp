@@ -33,8 +33,8 @@ int main() {
     Globals::window->setMouseCursorVisible(false);
     Globals::window->setMouseCursorGrabbed(true);
 
-    auto myCube = new cube();
-    auto otherCube = new cube();
+    const auto myCube = new cube();
+    const auto otherCube = new cube();
 
     otherCube->setPosition(sf::Vector3f(5.f, 0.f, -5.f));
 
